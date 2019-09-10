@@ -10,7 +10,7 @@ public class PlayerMissile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        thrust.z = 400.0f;
+        thrust.z = 600.0f;
         GetComponent<Rigidbody>().drag = 0;
         GetComponent<Rigidbody>().AddRelativeForce(thrust);
     }
@@ -24,22 +24,28 @@ public class PlayerMissile : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         Collider collider = collision.collider;
-
+        PlayerBase pb = playerBase.gameObject.GetComponent<PlayerBase>();
+        pb.fired = false;
         if(collider.CompareTag("Invader"))
         {
             Invader invader = collider.gameObject.GetComponent<Invader>();
             invader.Die();
-            PlayerBase pb = playerBase.gameObject.GetComponent<PlayerBase>();
-            pb.fired = false;
             Destroy(gameObject);
         }
         else if (collider.CompareTag("InvaderMissile"))
         {
             InvaderMissile i_missile = collider.gameObject.GetComponent<InvaderMissile>();
-            PlayerBase pb = playerBase.gameObject.GetComponent<PlayerBase>();
-            pb.fired = false;
             Destroy(gameObject);
             // The invader missile's collision function will handle its own death
+        }
+        else if (collider.CompareTag("Boundary"))
+        {
+            Destroy(gameObject);
+        }
+        else if (collider.CompareTag("BaseShield"))
+        {
+            Destroy(collider.gameObject);
+            Destroy(gameObject);
         }
     }
 }

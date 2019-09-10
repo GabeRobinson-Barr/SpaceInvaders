@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class PlayerBase : MonoBehaviour
 {
+    public AudioClip deathKnell;
+    public AudioClip pewpew;
     public float moveSpeed;
     public bool fired; // Tracks whether or not a player missile is still live
+    public GameObject controller;
+
+    public GameObject playerGun;
+    GameObject myGun;
 
     // Start is called before the first frame update
     void Start()
     {
         fired = false;
         moveSpeed = 0.05f;
+        Vector3 gunPos = gameObject.transform.position;
+        gunPos.z += 0.5f;
+        myGun = Instantiate(playerGun, gunPos, Quaternion.identity) as GameObject;
     }
 
     public GameObject missile;
@@ -21,6 +30,7 @@ public class PlayerBase : MonoBehaviour
     {
         if(Input.GetButtonDown("Fire1") && !fired)
         {
+            AudioSource.PlayClipAtPoint(pewpew, gameObject.transform.position);
             fired = true;
             Vector3 spawnPos = gameObject.transform.position;
             spawnPos.z += 0.75f;
@@ -31,17 +41,34 @@ public class PlayerBase : MonoBehaviour
 
         }
 
-        if( Input.GetAxisRaw("Horizontal") > 0) {
+        if( Input.GetAxisRaw("Horizontal") > 0 && gameObject.transform.position.x < 10.0f) {
             gameObject.transform.Translate(moveSpeed,0,0);
+            myGun.transform.Translate(moveSpeed,0,0);
         }
-        else if (Input.GetAxisRaw("Horizontal") < 0) {
+        else if (Input.GetAxisRaw("Horizontal") < 0 && gameObject.transform.position.x > -10.0f) {
             gameObject.transform.Translate(-moveSpeed,0,0);
+            myGun.transform.Translate(-moveSpeed,0,0);
         }
     }
 
     public void Die()
     {
         // todo fill this with the death stuff
+        AudioSource.PlayClipAtPoint(deathKnell, gameObject.transform.position);
+        GameController gc = controller.GetComponent<GameController>();
+        gc.newLife();
+        Destroy(myGun);
+        Destroy(gameObject);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Collider collider = collision.collider;
+        if(collider.CompareTag("Invader")) {
+            controller.GetComponent<GameController>().gameOver();
+            Destroy(myGun);
+            Destroy(gameObject);
+        }
     }
 
 }

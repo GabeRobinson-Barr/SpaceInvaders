@@ -12,10 +12,12 @@ public class InvaderMissile : MonoBehaviour
     void Start()
     {
         // TODO CHANGE HOW THIS IS IMPLEMENTED FOR FAST/SQUIGGLY MISSILES 
-        thrust.z = -400.0f;
+        thrust.z = -300.0f;
         missileStrength = 1;
         GetComponent<Rigidbody>().drag = 0;
         GetComponent<Rigidbody>().AddRelativeForce(thrust);
+        Physics.IgnoreLayerCollision(8,9);
+        Physics.IgnoreLayerCollision(9,9);
     }
 
     // Update is called once per frame
@@ -45,9 +47,14 @@ public class InvaderMissile : MonoBehaviour
             }
             // The player missile's collision function will handle its own death
         }
-        /*else if (collider.compareTag("BaseShield"))
+        else if (collider.CompareTag("Boundary"))
         {
-            //todo implement baseshield collisions
-        }*/
+            Destroy(gameObject);
+        }
+        else if (collider.CompareTag("BaseShield"))
+        {
+            Destroy(collider.gameObject);
+            Destroy(gameObject);
+        }
     }
 }
