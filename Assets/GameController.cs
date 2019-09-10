@@ -35,9 +35,23 @@ public class GameController : MonoBehaviour
     public GameObject gameOverUI;
     // Start is called before the first frame update
     public int[] highscores;
+
+    Camera cam;
+    public float leftLimit;
+    public float rightLimit;
+    public float topLimit;
+    public float botLimit;
     void Start()
     {
-        spawnpos.z = -5.0f;
+        //Screen.SetResolution(1280, 720, false);
+        cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        Vector3 botleft = cam.ScreenToWorldPoint(new Vector3(0, 0, cam.nearClipPlane));
+        Vector3 topright = cam.ScreenToWorldPoint(new Vector3(cam.pixelWidth, cam.pixelHeight, cam.nearClipPlane));
+        leftLimit = botleft.x;
+        botLimit = botleft.z;
+        topLimit = topright.z;
+        rightLimit = topright.x;
+        spawnpos.z = botLimit + 0.5f;
         highscores = new int[10];
         for(int i = 0; i < 10; i++) {
             highscores[i] = 1000 * (i + 1);
@@ -58,8 +72,8 @@ public class GameController : MonoBehaviour
         lives = 3;
         score = 0;
         level = 0;
-        upperBoundPos.z = 6.0f;
-        lowerBoundPos.z = -6.0f;
+        upperBoundPos.z = topLimit + 0.5f;
+        lowerBoundPos.z = botLimit - 0.5f;
         GameObject upperBound = Instantiate(boundary, upperBoundPos, Quaternion.identity) as GameObject;
         GameObject lowerbound = Instantiate(boundary, lowerBoundPos, Quaternion.identity) as GameObject;
         setInvaders();
@@ -84,7 +98,7 @@ public class GameController : MonoBehaviour
             {
                 if (!currentMystery.Equals(null))
                 {
-                    if(currentMystery.transform.position.x <= -10.5)
+                    if(currentMystery.transform.position.x <= leftLimit)
                     {
                         mysteryActive = false;
                         Destroy(currentMystery);
@@ -114,7 +128,7 @@ public class GameController : MonoBehaviour
                     }
                 }
             }
-            if ((minPos <= -10.0f && invadersMoveLeft) || (maxPos >= 10.0f && !invadersMoveLeft))
+            if ((minPos <= (leftLimit + 0.5f) && invadersMoveLeft) || (maxPos >= (rightLimit - 0.5f) && !invadersMoveLeft))
             {
                 invadersMoveLeft = !invadersMoveLeft;
                 for(int row = 0; row < 5; row++)
@@ -123,7 +137,7 @@ public class GameController : MonoBehaviour
                     {
                         if (!invaderArr[row,col].Equals(null))
                         {
-                            invaderArr[row,col].transform.Translate(0,0,-0.45f);
+                            invaderArr[row,col].transform.Translate(0,0,-((topLimit - botLimit) / 20.0f));
                             invaderArr[row,col].moveSpeed *= -1;
                         }
                     }
@@ -154,7 +168,7 @@ public class GameController : MonoBehaviour
 
     void spawnMystery()
     {
-        currentMystery = Instantiate(mystInvader, new Vector3(10.5f, 0, 4.9f), Quaternion.identity) as GameObject;
+        currentMystery = Instantiate(mystInvader, new Vector3(rightLimit, 0, topLimit - 0.1f), Quaternion.identity) as GameObject;
         Invader mysteryInvader = currentMystery.GetComponent<Invader>();
         mysteryInvader.moveSpeed = -0.05f;
         mysteryInvader.pointVal = (int)Random.Range(50, 300);
@@ -164,7 +178,8 @@ public class GameController : MonoBehaviour
 
     void createBases()
     {
-        Vector3 basePos = new Vector3(-8.0f, 0, -4.0f);
+        float offset = ((rightLimit - leftLimit) - 6.0f) / 3.0f;
+        Vector3 basePos = new Vector3(leftLimit + 2.0f, 0, botLimit + 1.5f);
         for(int i = 0; i < 4; i++)
         {
             for(int row = 0; row < 10; row++)
@@ -181,7 +196,7 @@ public class GameController : MonoBehaviour
                         }
                 }
             }
-            basePos.x += 5.0f;
+            basePos.x += offset;
         }
         
     }
@@ -258,11 +273,11 @@ public class GameController : MonoBehaviour
                     {
                         if (invadersMoveLeft)
                         {
-                            invaderArr[row,col].moveSpeed -= 0.02f / invaders;
+                            invaderArr[row,col].moveSpeed -= 0.015f / invaders;
                         }
                         else
                         {
-                            invaderArr[row,col].moveSpeed += 0.02f / invaders;
+                            invaderArr[row,col].moveSpeed += 0.015f / invaders;
                         }
                         
                     }
@@ -279,9 +294,9 @@ public class GameController : MonoBehaviour
     {
         invadersMoveLeft = true;
         invaderArr = new Invader[5,11];
-        float offsetX = 0.9f;
-        float offsetZ = 0.7f;
-        Vector3 invaderPos = new Vector3(0.0f, 0.0f, 1.75f - (level * 0.7f));
+        float offsetX = (rightLimit - leftLimit) / 25;
+        float offsetZ = (topLimit - botLimit) / 20;
+        Vector3 invaderPos = new Vector3(0.0f, 0.0f, (topLimit - (5 + level)* offsetZ));
         for(int row = 0; row < 5; row++)
         {
             for(int col = 0; col < 11; col++)

@@ -41,11 +41,11 @@ public class PlayerBase : MonoBehaviour
 
         }
 
-        if( Input.GetAxisRaw("Horizontal") > 0 && gameObject.transform.position.x < 10.0f) {
+        if (Input.GetAxisRaw("Horizontal") > 0 && gameObject.transform.position.x < controller.GetComponent<GameController>().rightLimit) {
             gameObject.transform.Translate(moveSpeed,0,0);
             myGun.transform.Translate(moveSpeed,0,0);
         }
-        else if (Input.GetAxisRaw("Horizontal") < 0 && gameObject.transform.position.x > -10.0f) {
+        else if (Input.GetAxisRaw("Horizontal") < 0 && gameObject.transform.position.x > controller.GetComponent<GameController>().leftLimit) {
             gameObject.transform.Translate(-moveSpeed,0,0);
             myGun.transform.Translate(-moveSpeed,0,0);
         }
