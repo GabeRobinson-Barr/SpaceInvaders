@@ -3,7 +3,14 @@ guid: b1675a5a36d6f174b960bc31e4c160ce
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - deathExplosion: {fileID: 4997061548264189341, guid: 67e0908875cbfdc4d8acb86cc8d62e6c,
+      type: 3}
+  - deathKnell: {instanceID: 0}
+  - pewpew: {instanceID: 0}
+  - controller: {instanceID: 0}
+  - playerGun: {instanceID: 0}
+  - missile: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

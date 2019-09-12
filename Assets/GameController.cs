@@ -72,9 +72,9 @@ public class GameController : MonoBehaviour
         lives = 3;
         score = 0;
         level = 0;
-        upperBoundPos.z = topLimit + 0.5f;
+        //upperBoundPos.z = topLimit + 0.5f;
         lowerBoundPos.z = botLimit - 0.5f;
-        GameObject upperBound = Instantiate(boundary, upperBoundPos, Quaternion.identity) as GameObject;
+        //GameObject upperBound = Instantiate(boundary, upperBoundPos, Quaternion.identity) as GameObject;
         GameObject lowerbound = Instantiate(boundary, lowerBoundPos, Quaternion.identity) as GameObject;
         setInvaders();
         GameObject pbObj = Instantiate(playerBase, spawnpos, Quaternion.identity) as GameObject;
@@ -120,7 +120,7 @@ public class GameController : MonoBehaviour
             {
                 for(int col = 0; col < 11; col++)
                 {
-                    if (!invaderArr[row,col].Equals(null))
+                    if (invaderArr[row,col].live)
                     {
                         Vector3 pos = invaderArr[row,col].transform.position;
                         minPos = Mathf.Min(pos.x, minPos);
@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour
                 {
                     for(int col = 0; col < 11; col++)
                     {
-                        if (!invaderArr[row,col].Equals(null))
+                        if (invaderArr[row,col].live)
                         {
                             invaderArr[row,col].transform.Translate(0,0,-((topLimit - botLimit) / 20.0f));
                             invaderArr[row,col].moveSpeed *= -1;
@@ -147,7 +147,7 @@ public class GameController : MonoBehaviour
             {
                 int randRow = (int)Random.Range(0.0f, 4.0f);
                 int randCol = (int)Random.Range(0.0f, 10.0f);
-                while(invaderArr[randRow,randCol].Equals(null))
+                while(!invaderArr[randRow,randCol].live)
                 {
                     randCol++;
                     if(randCol >= 11)
@@ -252,10 +252,7 @@ public class GameController : MonoBehaviour
         {
             for(int col = 0; col < 11; col++)
             {
-                if(!invaderArr[row,col].Equals(null))
-                {
-                    Destroy(invaderArr[row,col].gameObject);
-                }
+                Destroy(invaderArr[row,col].gameObject);
             }
         }
     }
@@ -285,6 +282,17 @@ public class GameController : MonoBehaviour
             }
         }
         else {
+            for(int i = 0; i < 5; i++)
+            {
+                for(int j = 0; j < 11; j++)
+                {
+                    GameObject[] invs = GameObject.FindGameObjectsWithTag("Invader");
+                    foreach(GameObject inv in invs)
+                    {
+                        Destroy(inv);
+                    }
+                }
+            }
             level = (level + 1) % 10;
             setInvaders();
         }

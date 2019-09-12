@@ -106,7 +106,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 124
   m_CollisionDetection: 0
@@ -122,6 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1675a5a36d6f174b960bc31e4c160ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathExplosion: {fileID: 4997061548264189341, guid: 67e0908875cbfdc4d8acb86cc8d62e6c,
+    type: 3}
   deathKnell: {fileID: 8300000, guid: 060cfcf8acdbee8488d1fadb0484cb84, type: 3}
   pewpew: {fileID: 8300000, guid: 1fe475b4218da434191e7e9f822a3af6, type: 3}
   moveSpeed: 0

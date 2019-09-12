@@ -8,6 +8,8 @@ public class InvaderMissile : MonoBehaviour
     public Vector3 thrust;
     public float missileStrength;
 
+    bool live;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +20,8 @@ public class InvaderMissile : MonoBehaviour
         GetComponent<Rigidbody>().AddRelativeForce(thrust);
         Physics.IgnoreLayerCollision(8,9);
         Physics.IgnoreLayerCollision(9,9);
+        gameObject.GetComponent<Renderer>().material.color = new Color(0,0,0.8f);
+        live = true;
     }
 
     // Update is called once per frame
@@ -26,35 +30,40 @@ public class InvaderMissile : MonoBehaviour
         
     }
 
+    void FixedUpdate()
+    {
+        if(!live)
+        {
+            GetComponent<Rigidbody>().AddForce(new Vector3(0,0,-5));
+        }
+        
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         Collider collider = collision.collider;
-
-        if(collider.CompareTag("PlayerBase"))
+        if(live)
         {
-            PlayerBase playerBase = collider.gameObject.GetComponent<PlayerBase>();
-            playerBase.Die();
-            Destroy(gameObject);
-        }
-        else if (collider.CompareTag("PlayerMissile"))
-        {
-            PlayerMissile p_missile = collider.gameObject.GetComponent<PlayerMissile>();
-            if (missileStrength > 1) {
-                missileStrength--;
+            if(collider.CompareTag("PlayerBase"))
+            {
+                PlayerBase playerBase = collider.gameObject.GetComponent<PlayerBase>();
+                playerBase.Die();
             }
-            else {
+            else if (collider.CompareTag("PlayerMissile"))
+            {
+                PlayerMissile p_missile = collider.gameObject.GetComponent<PlayerMissile>();
+                // The player missile's collision function will handle its own death
+            }
+            else if (collider.CompareTag("Boundary"))
+            {
                 Destroy(gameObject);
             }
-            // The player missile's collision function will handle its own death
-        }
-        else if (collider.CompareTag("Boundary"))
-        {
-            Destroy(gameObject);
-        }
-        else if (collider.CompareTag("BaseShield"))
-        {
-            Destroy(collider.gameObject);
-            Destroy(gameObject);
+            else if (collider.CompareTag("BaseShield"))
+            {
+                Destroy(collider.gameObject);
+            }
+            live = false;
+            gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 0.2f);
         }
     }
 }

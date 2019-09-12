@@ -8,12 +8,18 @@ public class Invader : MonoBehaviour
     public int pointVal;
     public float moveSpeed;
     public AudioClip pew;
+    public bool live;
 
     public GameController gameController;
+
+    Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
         Physics.IgnoreLayerCollision(8,9);
+        Physics.IgnoreLayerCollision(8,8);
+        live = true;
+        rb = gameObject.GetComponent<Rigidbody>();
     }
 
     public GameObject missile; // TODO implement random firing logic
@@ -33,32 +39,41 @@ public class Invader : MonoBehaviour
 
     void FixedUpdate()
     {
-        gameObject.transform.Translate(moveSpeed,0,0);
+        if (live)
+        {
+            gameObject.transform.Translate(moveSpeed,0,0);
+        }
+        else
+        {
+            rb.AddForce(new Vector3(0,0,-2));
+        }
+        
     }
 
 
     public void Die()
     {
-        /*TODO
-        add score increase
-        decrease number of live invaders
-        play animation and sound byte
-         */
         gameController.score += pointVal;
         if (pointVal <= 30)
         {
             gameController.increaseSpeed();
         }
-        Destroy(gameObject);
+        rb.constraints = RigidbodyConstraints.None;
+        rb.AddRelativeForce(new Vector3(0,0,-200));
+        gameObject.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
+        live = false;
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        Collider collider = collision.collider;
-        if(collider.CompareTag("BaseShield"))
+        if (live)
         {
-            // do stuff for this case once you do baseshield
-            Destroy(collider.gameObject);
+            Collider collider = collision.collider;
+            if(collider.CompareTag("BaseShield"))
+            {
+                // do stuff for this case once you do baseshield
+                Destroy(collider.gameObject);
+            }
         }
     }
 }

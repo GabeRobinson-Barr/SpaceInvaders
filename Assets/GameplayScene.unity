@@ -458,3 +458,7 @@ MonoBehaviour:
   gameOverUI: {fileID: 4031513793183519800, guid: c8fbf2828dfd81f45b1c7527f1c849a8,
     type: 3}
   highscores: 
+  leftLimit: 0
+  rightLimit: 0
+  topLimit: 0
+  botLimit: 0

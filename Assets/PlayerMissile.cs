@@ -7,12 +7,19 @@ public class PlayerMissile : MonoBehaviour
     public Vector3 thrust;
     public GameObject playerBase; // Keeps track of the object that fired this missile
 
+    Rigidbody rb;
+
+    bool live;
+
     // Start is called before the first frame update
     void Start()
     {
-        thrust.z = 600.0f;
-        GetComponent<Rigidbody>().drag = 0;
-        GetComponent<Rigidbody>().AddRelativeForce(thrust);
+        gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0, 0);
+        thrust.z = 800.0f;
+        rb = GetComponent<Rigidbody>();
+        rb.drag = 0;
+        rb.AddRelativeForce(thrust);
+        live = true;
     }
 
     // Update is called once per frame
@@ -21,31 +28,36 @@ public class PlayerMissile : MonoBehaviour
         
     }
 
+    void FixedUpdate()
+    {
+        rb.AddForce(new Vector3(0,0,-10));
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         Collider collider = collision.collider;
         PlayerBase pb = playerBase.gameObject.GetComponent<PlayerBase>();
-        pb.fired = false;
-        if(collider.CompareTag("Invader"))
+        if (live)
         {
-            Invader invader = collider.gameObject.GetComponent<Invader>();
-            invader.Die();
-            Destroy(gameObject);
-        }
-        else if (collider.CompareTag("InvaderMissile"))
-        {
-            InvaderMissile i_missile = collider.gameObject.GetComponent<InvaderMissile>();
-            Destroy(gameObject);
-            // The invader missile's collision function will handle its own death
-        }
-        else if (collider.CompareTag("Boundary"))
-        {
-            Destroy(gameObject);
-        }
-        else if (collider.CompareTag("BaseShield"))
-        {
-            Destroy(collider.gameObject);
-            Destroy(gameObject);
+            if(collider.CompareTag("Invader"))
+            {
+                Invader invader = collider.gameObject.GetComponent<Invader>();
+                if(invader.live)
+                {
+                    invader.Die();
+                }
+            }
+            else if (collider.CompareTag("InvaderMissile"))
+            {
+                InvaderMissile i_missile = collider.gameObject.GetComponent<InvaderMissile>();
+                // The invader missile's collision function will handle its own death
+            }
+            else if (collider.CompareTag("BaseShield"))
+            {
+                Destroy(collider.gameObject);
+            }
+            live = false;
+            gameObject.GetComponent<Renderer>().material.color = new Color(0.2f,0,0);
         }
     }
 }
