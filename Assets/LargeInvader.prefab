@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 24f1ebfafbbe9dd4db9334a345d5642d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,9 +107,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointVal: 0
-  moveSpeed: 0
+  moveSpeedX: 0
+  moveSpeedZ: 0
   pew: {fileID: 8300000, guid: 4631a3511e4f1a140a3c15257253a500, type: 3}
+  live: 0
   gameController: {fileID: 0}
+  powerup: {fileID: 0}
   missile: {fileID: 9215217286550045273, guid: c60142533db10fc4e9038908fe24433d, type: 3}
 --- !u!54 &-3844527077616726910
 Rigidbody:

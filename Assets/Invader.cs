@@ -6,16 +6,19 @@ public class Invader : MonoBehaviour
 {
     // Add 
     public int pointVal;
-    public float moveSpeed;
+    public float moveSpeedX;
+    public float moveSpeedZ;
     public AudioClip pew;
     public bool live;
 
     public GameController gameController;
+    public GameObject powerup;
 
     Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
+        Physics.IgnoreLayerCollision(8, 12);
         Physics.IgnoreLayerCollision(8,9);
         Physics.IgnoreLayerCollision(8,8);
         live = true;
@@ -26,7 +29,7 @@ public class Invader : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void Fire() // fires a missile
@@ -41,11 +44,11 @@ public class Invader : MonoBehaviour
     {
         if (live)
         {
-            gameObject.transform.Translate(moveSpeed,0,0);
+            gameObject.transform.Translate(moveSpeedX,0,-moveSpeedZ);
         }
         else
         {
-            rb.AddForce(new Vector3(0,0,-2));
+            rb.AddForce(new Vector3(0, 0, -2));
         }
         
     }
@@ -58,22 +61,39 @@ public class Invader : MonoBehaviour
         {
             gameController.increaseSpeed();
         }
+        else
+        {
+            if (Random.Range(0, 1.0f) > 0.5f)
+            {
+                Vector3 powerVec = gameObject.transform.position;
+                powerVec.z -= 0.5f;
+                Instantiate(powerup, powerVec, Quaternion.identity);
+            }
+            gameController.mysteryActive = false;
+        }
         rb.constraints = RigidbodyConstraints.None;
-        rb.AddRelativeForce(new Vector3(0,0,-200));
+        rb.constraints = RigidbodyConstraints.FreezeRotationX;
+        rb.constraints = RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+        rb.AddForce(new Vector3(0,0,-300));
         gameObject.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f);
         live = false;
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        Collider collider = collision.collider;
         if (live)
         {
-            Collider collider = collision.collider;
             if(collider.CompareTag("BaseShield"))
             {
                 // do stuff for this case once you do baseshield
                 Destroy(collider.gameObject);
             }
+        }
+        else if(collider.CompareTag("Boundary"))
+        {
+            rb.constraints = RigidbodyConstraints.FreezePositionZ;
         }
     }
 }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 728575987337802381}
   - component: {fileID: 1732277850608747716}
   - component: {fileID: -1066866855535383483}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Player Missile Prefab
   m_TagString: PlayerMissile
   m_Icon: {fileID: 0}
@@ -124,3 +124,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thrust: {x: 0, y: 0, z: 0}
   playerBase: {fileID: 0}
+  isBeam: 0

@@ -27,10 +27,11 @@ public class GameController : MonoBehaviour
 
     bool invadersMoveLeft = true;
 
-    bool mysteryActive = false;
+    public bool mysteryActive = false;
     GameObject currentMystery;
     public GameObject scoreUI;
     public GameObject livesUI;
+    LivesUI l_UI;
     public GameObject startScreen;
     public GameObject gameOverUI;
     // Start is called before the first frame update
@@ -73,7 +74,7 @@ public class GameController : MonoBehaviour
         score = 0;
         level = 0;
         //upperBoundPos.z = topLimit + 0.5f;
-        lowerBoundPos.z = botLimit - 0.5f;
+        lowerBoundPos.z = botLimit - 0.4f;
         //GameObject upperBound = Instantiate(boundary, upperBoundPos, Quaternion.identity) as GameObject;
         GameObject lowerbound = Instantiate(boundary, lowerBoundPos, Quaternion.identity) as GameObject;
         setInvaders();
@@ -84,8 +85,9 @@ public class GameController : MonoBehaviour
         ScoreUI s_UI = scoreUIobj.gameObject.GetComponent<ScoreUI>();
         s_UI.controller = gameObject.GetComponent<GameController>();
         GameObject livesUIobj = Instantiate(livesUI, new Vector3(0,0,0), Quaternion.identity) as GameObject;
-        LivesUI l_UI = livesUIobj.gameObject.GetComponent<LivesUI>();
+        l_UI = livesUIobj.gameObject.GetComponent<LivesUI>();
         l_UI.controller = gameObject.GetComponent<GameController>();
+        l_UI.pb = pb;
         createBases();
     }
 
@@ -137,8 +139,7 @@ public class GameController : MonoBehaviour
                     {
                         if (invaderArr[row,col].live)
                         {
-                            invaderArr[row,col].transform.Translate(0,0,-((topLimit - botLimit) / 20.0f));
-                            invaderArr[row,col].moveSpeed *= -1;
+                            invaderArr[row,col].moveSpeedX *= -1;
                         }
                     }
                 }
@@ -170,7 +171,8 @@ public class GameController : MonoBehaviour
     {
         currentMystery = Instantiate(mystInvader, new Vector3(rightLimit, 0, topLimit - 0.1f), Quaternion.identity) as GameObject;
         Invader mysteryInvader = currentMystery.GetComponent<Invader>();
-        mysteryInvader.moveSpeed = -0.05f;
+        mysteryInvader.moveSpeedX = -0.05f;
+        mysteryInvader.moveSpeedZ = 0;
         mysteryInvader.pointVal = (int)Random.Range(50, 300);
         mysteryInvader.gameController = gameObject.GetComponent<GameController>();
         mysteryActive = true;
@@ -214,7 +216,15 @@ public class GameController : MonoBehaviour
         {
             Destroy(p_m);
         }
-        if(lives == 0) {
+        Destroy(currentMystery);
+        mysteryActive = false;
+        GameObject[] powerups;
+        powerups = GameObject.FindGameObjectsWithTag("Powerup");
+        foreach (GameObject p in powerups)
+        {
+            Destroy(p);
+        }
+        if (lives == 0) {
             gameOver();
         }
         else
@@ -223,6 +233,7 @@ public class GameController : MonoBehaviour
             GameObject obj = Instantiate(playerBase, spawnpos, Quaternion.identity) as GameObject;
             pb = obj.GetComponent<PlayerBase>();
             pb.controller = gameObject;
+            l_UI.pb = pb;
         }
     }
 
@@ -244,6 +255,12 @@ public class GameController : MonoBehaviour
         {
             Destroy(currentMystery);
             mysteryActive = false;
+        }
+        GameObject[] powerups;
+        powerups = GameObject.FindGameObjectsWithTag("Powerup");
+        foreach (GameObject p in powerups)
+        {
+            Destroy(p);
         }
         GameObject gameOverobj = Instantiate(gameOverUI, new Vector3(0,0,0), Quaternion.identity) as GameObject;
         GameOverUI go_UI = gameOverobj.GetComponent<GameOverUI>();
@@ -270,19 +287,40 @@ public class GameController : MonoBehaviour
                     {
                         if (invadersMoveLeft)
                         {
-                            invaderArr[row,col].moveSpeed -= 0.015f / invaders;
+                            invaderArr[row,col].moveSpeedX -= 0.015f / invaders;
                         }
                         else
                         {
-                            invaderArr[row,col].moveSpeed += 0.015f / invaders;
+                            invaderArr[row,col].moveSpeedX += 0.015f / invaders;
                         }
-                        
+                        invaderArr[row, col].moveSpeedZ += 0.0003f / invaders;
+
                     }
                 }
             }
         }
         else {
-            for(int i = 0; i < 5; i++)
+            GameObject[] i_missiles;
+            i_missiles = GameObject.FindGameObjectsWithTag("InvaderMissile");
+            foreach (GameObject i_m in i_missiles)
+            {
+                Destroy(i_m);
+            }
+            GameObject[] p_missiles;
+            p_missiles = GameObject.FindGameObjectsWithTag("PlayerMissile");
+            foreach (GameObject p_m in p_missiles)
+            {
+                Destroy(p_m);
+            }
+            Destroy(currentMystery);
+            mysteryActive = false;
+            GameObject[] powerups;
+            powerups = GameObject.FindGameObjectsWithTag("Powerup");
+            foreach (GameObject p in powerups)
+            {
+                Destroy(p);
+            }
+            for (int i = 0; i < 5; i++)
             {
                 for(int j = 0; j < 11; j++)
                 {
@@ -315,7 +353,8 @@ public class GameController : MonoBehaviour
                     Invader i = invader.GetComponent<Invader>();
                     i.gameController = gameObject.GetComponent<GameController>();
                     i.pointVal = 10;
-                    i.moveSpeed = -0.01f;
+                    i.moveSpeedX = -0.01f;
+                    i.moveSpeedZ = 0.0004f;
                     invaderArr[row,col] = i;
                 }
                 else if (row < 4)
@@ -324,7 +363,8 @@ public class GameController : MonoBehaviour
                     Invader i = invader.GetComponent<Invader>();
                     i.gameController = gameObject.GetComponent<GameController>();
                     i.pointVal = 20;
-                    i.moveSpeed = -0.01f;
+                    i.moveSpeedX = -0.01f;
+                    i.moveSpeedZ = 0.0004f;
                     invaderArr[row,col] = i;
                 }
                 else {
@@ -332,7 +372,8 @@ public class GameController : MonoBehaviour
                     Invader i = invader.GetComponent<Invader>();
                     i.gameController = gameObject.GetComponent<GameController>();
                     i.pointVal = 30;
-                    i.moveSpeed = -0.01f;
+                    i.moveSpeedX = -0.01f;
+                    i.moveSpeedZ = 0.0004f;
                     invaderArr[row,col] = i;
                 }
                 invaderPos.x += offsetX;

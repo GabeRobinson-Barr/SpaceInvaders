@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8594465890936699107}
   m_Layer: 8
   m_Name: MysteryInvader
-  m_TagString: Invader
+  m_TagString: MysteryInvader
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 26c027dd2fbb7a94d9379302bd070517, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,9 +107,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointVal: 0
-  moveSpeed: -0.1
+  moveSpeedX: 0
+  moveSpeedZ: 0
   pew: {fileID: 0}
+  live: 0
   gameController: {fileID: 0}
+  powerup: {fileID: 1007923541207127805, guid: 14fe71fe458570c4cb436cec0b250c31, type: 3}
   missile: {fileID: 0}
 --- !u!54 &8594465890936699107
 Rigidbody:

@@ -126,9 +126,13 @@ MonoBehaviour:
     type: 3}
   deathKnell: {fileID: 8300000, guid: 060cfcf8acdbee8488d1fadb0484cb84, type: 3}
   pewpew: {fileID: 8300000, guid: 1fe475b4218da434191e7e9f822a3af6, type: 3}
+  powerupSound: {fileID: 8300000, guid: 83a23d57ef33c0b4a80e47050780cf33, type: 3}
   moveSpeed: 0
   fired: 0
   controller: {fileID: 0}
   playerGun: {fileID: 7770211091951143727, guid: 7d12de44e6592724697b5936ef0f680b,
     type: 3}
   missile: {fileID: 4825434129162691120, guid: e381f5166c22af248abd686ef20a7c1f, type: 3}
+  beamObj: {fileID: 7734328980103267645, guid: 86c0188db0e1592478bd358d06512b63, type: 3}
+  rapidFire: 0
+  beam: 0

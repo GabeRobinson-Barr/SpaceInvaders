@@ -7,6 +7,7 @@ public class PlayerBase : MonoBehaviour
     public GameObject deathExplosion;
     public AudioClip deathKnell;
     public AudioClip pewpew;
+    public AudioClip powerupSound;
     public float moveSpeed;
     public bool fired; // Tracks whether or not a player missile is still live
     public GameObject controller;
@@ -14,11 +15,14 @@ public class PlayerBase : MonoBehaviour
     public GameObject playerGun;
     GameObject myGun;
 
+    public GameObject missile;
+    public GameObject beamObj;
+
     float timer;
     float fireRate;
 
-    bool rapidFire;
-    bool beam;
+    public bool rapidFire;
+    public bool beam;
 
     // Start is called before the first frame update
     void Start()
@@ -31,10 +35,9 @@ public class PlayerBase : MonoBehaviour
         myGun = Instantiate(playerGun, gunPos, Quaternion.identity) as GameObject;
         fireRate = 0.5f;
         rapidFire = false;
-        beam = true;
+        beam = false;
     }
 
-    public GameObject missile;
 
     // Update is called once per frame
     void Update()
@@ -48,7 +51,7 @@ public class PlayerBase : MonoBehaviour
         {
             timer = 0;
         }
-        if(Input.GetButtonDown("Fire1") && !fired)
+        if(((Input.GetButton("Fire1") && rapidFire) || Input.GetButtonDown("Fire1")) && !fired)
         {
             AudioSource.PlayClipAtPoint(pewpew, gameObject.transform.position);
             fired = true;
@@ -56,12 +59,17 @@ public class PlayerBase : MonoBehaviour
             spawnPos.z += 0.75f;
             if(beam)
             {
-                //fire beam ammo instead
+                spawnPos.z += 5.0f;
+                GameObject obj = Instantiate(beamObj, spawnPos, Quaternion.identity) as GameObject;
+                PlayerMissile m = obj.GetComponent<PlayerMissile>();
+                m.playerBase = gameObject;
+                m.isBeam = true;
             }
             else{
                 GameObject obj = Instantiate(missile, spawnPos, Quaternion.identity) as GameObject;
                 PlayerMissile m = obj.GetComponent<PlayerMissile>();
                 m.playerBase = gameObject;
+                m.isBeam = false;
             }
 
         }
@@ -102,23 +110,28 @@ public class PlayerBase : MonoBehaviour
         }
         else if (collider.CompareTag("Powerup"))
         {
-            if(!rapidFire && !beam)
+            AudioSource.PlayClipAtPoint(powerupSound, gameObject.transform.position);
+            if (!rapidFire && !beam)
             {
                 rapidFire = true;
-                fireRate = 0.1f;
+                fireRate = 0.25f;
+                gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0.8f, 0.2f);
             }
             else if(rapidFire && !beam)
             {
                 rapidFire = false;
                 beam = true;
-                fireRate = 1.0f;
+                fireRate = 2.0f;
+                gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0.5f, 0);
             }
             else
             {
                 rapidFire = true;
-                fireRate = 0.2f;
+                fireRate = 1.0f;
+                gameObject.GetComponent<Renderer>().material.color = new Color(0.8f, 0.1f, 0);
             }
-
+            GameObject o = collider.gameObject;
+            Destroy(o);
         }
     }
 

@@ -13,7 +13,7 @@ public class InvaderMissile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // TODO CHANGE HOW THIS IS IMPLEMENTED FOR FAST/SQUIGGLY MISSILES 
+        Physics.IgnoreLayerCollision(9, 12);
         thrust.z = -300.0f;
         missileStrength = 1;
         GetComponent<Rigidbody>().drag = 0;
