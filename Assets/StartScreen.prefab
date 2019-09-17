@@ -158,13 +158,24 @@ MonoBehaviour:
   m_Text: 'Space Invaders
 
 
-    Controls:
+    Controls (Keyboard):
 
     Left/Right arrow - Move Left/Right
 
     Left Ctrl - Shoot
 
-    Alt - Change Camera
+    Space - Change Camera
+
+
+    Controls (Touchscreen):
+
+    Tap Left side of the screen - Move Left
+
+    Tap Right side of the screen - Move Right
+
+    Tap Bottom half of the screen - shoot
+
+    Tap with 3 Fingers - Change Camera
 
 
 

@@ -15,7 +15,16 @@ public class StartScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Fire1") || Input.GetAxisRaw("Horizontal") != 0 || Input.GetButtonDown("Fire2"))
+        bool start = false;
+        if(Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if(touch.phase == TouchPhase.Began)
+            {
+                start = true;
+            }
+        }
+        if (Input.GetButtonDown("Fire1") || Input.GetAxisRaw("Horizontal") != 0 || Input.GetButtonDown("Fire2") || start)
         {
             controller.startGame();
             Destroy(gameObject);

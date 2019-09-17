@@ -51,7 +51,32 @@ public class PlayerBase : MonoBehaviour
         {
             timer = 0;
         }
-        if(((Input.GetButton("Fire1") && rapidFire) || Input.GetButtonDown("Fire1")) && !fired)
+        bool touchMoveLeft = false;
+        bool touchMoveRight = false;
+        bool touchFire = false;
+        if(Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if(touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+            {
+                Vector2 touchPos = touch.position;
+                Camera cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+                Vector2 camDims = new Vector2(cam.pixelWidth, cam.pixelHeight);
+                if(touchPos.x < (camDims.x * 0.2f))
+                {
+                    touchMoveLeft = true;
+                }
+                else if (touchPos.x > (camDims.x * 0.8f))
+                {
+                    touchMoveRight = true;
+                }
+                else if (touchPos.y < (camDims.y * 0.5f))
+                {
+                    touchFire = true;
+                }
+            }
+        }
+        if(((Input.GetButton("Fire1") && rapidFire) || Input.GetButtonDown("Fire1") || touchFire) && !fired)
         {
             AudioSource.PlayClipAtPoint(pewpew, gameObject.transform.position);
             fired = true;
@@ -74,10 +99,10 @@ public class PlayerBase : MonoBehaviour
 
         }
 
-        if (Input.GetAxisRaw("Horizontal") > 0 && gameObject.transform.position.x < controller.GetComponent<GameController>().rightLimit) {
+        if ((Input.GetAxisRaw("Horizontal") > 0 || touchMoveRight) && gameObject.transform.position.x < controller.GetComponent<GameController>().rightLimit) {
             gameObject.transform.Translate(moveSpeed,0,0);
         }
-        else if (Input.GetAxisRaw("Horizontal") < 0 && gameObject.transform.position.x > controller.GetComponent<GameController>().leftLimit) {
+        else if ((Input.GetAxisRaw("Horizontal") < 0 || touchMoveLeft) && gameObject.transform.position.x > controller.GetComponent<GameController>().leftLimit) {
             gameObject.transform.Translate(-moveSpeed,0,0);
         }
         Vector3 gunVec = gameObject.transform.position;
